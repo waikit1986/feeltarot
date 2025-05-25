@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		58815BF82DE2AD3F00891B60 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 58815BF72DE2AD3F00891B60 /* Auth */; };
+		58815BFA2DE2AD3F00891B60 /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = 58815BF92DE2AD3F00891B60 /* Functions */; };
+		58815BFC2DE2AD3F00891B60 /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = 58815BFB2DE2AD3F00891B60 /* PostgREST */; };
+		58815BFE2DE2AD3F00891B60 /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = 58815BFD2DE2AD3F00891B60 /* Realtime */; };
+		58815C002DE2AD3F00891B60 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 58815BFF2DE2AD3F00891B60 /* Storage */; };
+		58815C022DE2AD3F00891B60 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 58815C012DE2AD3F00891B60 /* Supabase */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		58F119922DE15BBB00B5C7AE /* feeltarot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = feeltarot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +32,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58815BFC2DE2AD3F00891B60 /* PostgREST in Frameworks */,
+				58815BFA2DE2AD3F00891B60 /* Functions in Frameworks */,
+				58815C022DE2AD3F00891B60 /* Supabase in Frameworks */,
+				58815BF82DE2AD3F00891B60 /* Auth in Frameworks */,
+				58815C002DE2AD3F00891B60 /* Storage in Frameworks */,
+				58815BFE2DE2AD3F00891B60 /* Realtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +80,12 @@
 			);
 			name = feeltarot;
 			packageProductDependencies = (
+				58815BF72DE2AD3F00891B60 /* Auth */,
+				58815BF92DE2AD3F00891B60 /* Functions */,
+				58815BFB2DE2AD3F00891B60 /* PostgREST */,
+				58815BFD2DE2AD3F00891B60 /* Realtime */,
+				58815BFF2DE2AD3F00891B60 /* Storage */,
+				58815C012DE2AD3F00891B60 /* Supabase */,
 			);
 			productName = feeltarot;
 			productReference = 58F119922DE15BBB00B5C7AE /* feeltarot.app */;
@@ -94,6 +115,9 @@
 			);
 			mainGroup = 58F119892DE15BBB00B5C7AE;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				58815BF62DE2AD3F00891B60 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 58F119932DE15BBB00B5C7AE /* Products */;
 			projectDirPath = "";
@@ -249,6 +273,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = feeltarot/feeltarot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"feeltarot/Preview Content\"";
@@ -256,11 +281,14 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feel Tarot";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -268,9 +296,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lowwaikit.feeltarot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -279,6 +311,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = feeltarot/feeltarot.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"feeltarot/Preview Content\"";
@@ -286,11 +319,14 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Feel Tarot";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -298,9 +334,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lowwaikit.feeltarot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -326,6 +366,50 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		58815BF62DE2AD3F00891B60 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		58815BF72DE2AD3F00891B60 /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58815BF62DE2AD3F00891B60 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		58815BF92DE2AD3F00891B60 /* Functions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58815BF62DE2AD3F00891B60 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Functions;
+		};
+		58815BFB2DE2AD3F00891B60 /* PostgREST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58815BF62DE2AD3F00891B60 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
+		58815BFD2DE2AD3F00891B60 /* Realtime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58815BF62DE2AD3F00891B60 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Realtime;
+		};
+		58815BFF2DE2AD3F00891B60 /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58815BF62DE2AD3F00891B60 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Storage;
+		};
+		58815C012DE2AD3F00891B60 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58815BF62DE2AD3F00891B60 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 58F1198A2DE15BBB00B5C7AE /* Project object */;
 }

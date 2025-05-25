@@ -8,6 +8,21 @@
 import Foundation
 
 class LoginVM: ObservableObject {
+    
+    // - MARK: check if there's credential
+    
+    @Published var isRegistered: Bool = false
+    
+    func checkStoredCredentials() {
+        let hasToken = KeychainHelper.standard.read(service: tokenService, account: accessTokenAccount) != nil
+        let hasUsername = KeychainHelper.standard.read(service: tokenService, account: usernameAccount) != nil
+        let hasPassword = KeychainHelper.standard.read(service: tokenService, account: passwordAccount) != nil
+        
+        isRegistered = hasToken && hasUsername && hasPassword
+    }
+
+    // - MARK: Login with username & password
+
     @Published var username = ""
     @Published var password = ""
     @Published var isLoading = false

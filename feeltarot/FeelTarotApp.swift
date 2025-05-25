@@ -10,14 +10,18 @@ import SwiftUI
 @main
 struct FeelTarotApp: App {
     
-    @StateObject var loginVM = LoginVM()
+    @StateObject var userManager = UserManager()
     @StateObject var homeVM = HomeVM()
+    @StateObject var loginVM = LoginVM()
+    @StateObject var keyboard = KeyboardObserver()
     
     var body: some Scene {
         WindowGroup {
             HomeView()
-                .environmentObject(loginVM)
+                .environmentObject(userManager)
                 .environmentObject(homeVM)
+                .environmentObject(loginVM)
+                .environmentObject(keyboard)
         }
     }
 }

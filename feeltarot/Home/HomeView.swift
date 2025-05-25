@@ -9,12 +9,24 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @EnvironmentObject var userManager: UserManager
+    
     var body: some View {
         VStack {
-            LoginView()
+            if userManager.id != nil {
+                JournalView()
+            } else {
+                LoginView()
+            }
         }
         .padding()
+        .fontDesign(.rounded)
     }
+}
+
+#Preview {
+    HomeView()
+        .environmentObject(UserManager())
 }
 
 
