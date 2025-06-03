@@ -30,7 +30,9 @@ struct CardAnswerView: View {
             
             Button {
                 Task {
-                    journalVM.isShowingCardView = false
+                    withAnimation(.default,{
+                        journalVM.tappedCardAnswerView()
+                    })
                 }
             } label: {
                 Text("I'm Done")

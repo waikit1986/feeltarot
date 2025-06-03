@@ -30,7 +30,11 @@ struct LoginView: View {
                     .multilineTextAlignment(.center)
             }
             
-            Button(action: loginVM.login) {
+            Button {
+                Task {
+                    await loginVM.login()
+                }
+            }label: {
                 if loginVM.isLoading {
                     ProgressView()
                         .frame(maxWidth: .infinity)

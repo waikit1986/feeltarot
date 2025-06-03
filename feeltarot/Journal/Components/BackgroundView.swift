@@ -17,8 +17,8 @@ struct BackgroundView: View {
             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
             .offset(x: (journalVM.randomBackground == 1) ? -50 : 0)
             .ignoresSafeArea()
-            .opacity(journalVM.isShowingCardListView ? 0.5 : 1)
-            .animation(.easeInOut(duration: 1), value: journalVM.isShowingCardListView)
+            .opacity(journalVM.isShowingCardView ? 0.5 : 1)
+            .animation(.easeInOut(duration: 1), value: journalVM.isShowingCardView)
     }
 }
 

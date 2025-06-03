@@ -17,7 +17,7 @@ struct WelcomeView: View {
     
     var body: some View {
         ZStack {
-            Image("girlReadingBook")
+            Image("background-0")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
@@ -51,49 +51,16 @@ struct WelcomeView: View {
                 .padding()
                 
                 if showLine4 {
-                    VStack {
-                        TextField("Username", text: $loginVM.username)
-                            .autocapitalization(.none)
-                            .padding()
-                            .background(Color(.secondarySystemBackground))
-                            .cornerRadius(12)
-                        
-                        SecureField("Password", text: $loginVM.password)
-                            .padding()
-                            .background(Color(.secondarySystemBackground))
-                            .cornerRadius(12)
-                        
-                        if let errorMessage = loginVM.errorMessage {
-                            Text(errorMessage)
-                                .foregroundColor(.red)
-                                .multilineTextAlignment(.center)
-                        }
-                        
-                        Button(action: loginVM.login) {
-                            if loginVM.isLoading {
-                                ProgressView()
-                                    .frame(maxWidth: .infinity)
-                                
-                            } else {
-                                Text("Sign Up / Login")
-                                    .frame(maxWidth: .infinity)
-                            }
-                        }
-                        .disabled(loginVM.username.isEmpty || loginVM.password.isEmpty || loginVM.isLoading)
-                        .padding()
-                        .background(Color("AccentColor"))
-                        .foregroundColor(.black)
-                        .cornerRadius(12)
-                        
-                        Spacer()
+                    if loginVM.isCreateAccount == false {
+                        LoginView()
+                    } else {
+                        CreateAccountView()
                     }
-                    .frame(width: UIScreen.main.bounds.width * 0.8)
-                    .padding()
                 }
             }
             .padding()
             .padding(.vertical)
-            .onAppear {
+            .task {
                 withAnimation(.easeIn(duration: 1.0)) {
                     showLine1 = true
                 }

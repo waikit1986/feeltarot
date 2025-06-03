@@ -23,4 +23,8 @@ final class KeyboardObserver: ObservableObject {
             .assign(to: \.isKeyboardVisible, on: self)
             .store(in: &cancellables)
     }
+    
+    func hideKeyboard() {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
 }

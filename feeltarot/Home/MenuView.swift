@@ -11,46 +11,42 @@ import SwiftUI
 struct MenuView: View {
     
     var body: some View {
-            VStack {
-                Spacer()
+        HStack {
+            Spacer()
+            
+            Button {
                 
-                HStack {
-                    Spacer()
-                    
-                    Button {
-                       
-                    } label: {
-                        Image(systemName: "house")
-                            .font(.title3)
-                    }
-                    
-                    Spacer()
-                    
-                    Button {
-
-                    } label: {
-                        Image(systemName: "list.star")
-                            .font(.title3)
-                    }
-                    
-                    Spacer()
-                    
-                    Button {
-
-                    } label: {
-                        Image(systemName: "gearshape")
-                            .font(.title3)
-                    }
-                    
-                    Spacer()
-                }
+            } label: {
+                Image(systemName: "house")
+                    .font(.title3)
             }
-            .foregroundStyle(Color("AccentColor"))
-            .background(Color.black)
-            .fontWeight(.semibold)
-            .frame(height: UIScreen.main.bounds.height * 0.05)
+            
+            Spacer()
+            
+            Button {
+                
+            } label: {
+                Image(systemName: "list.star")
+                    .font(.title3)
+            }
+            
+            Spacer()
+            
+            Button {
+                
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.title3)
+            }
+            
+            Spacer()
         }
+        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.05)
+        .foregroundStyle(Color("AccentColor"))
+        .background(Color.black)
+        .fontWeight(.semibold)
     }
+}
 
 
 #Preview {

@@ -18,7 +18,7 @@ struct JournalButtonView: View {
             Task {
                 keyboard.hideKeyboard()
                 withAnimation(.spring(dampingFraction: 0.6)) {
-                    journalVM.isShowingCardListView = true
+                    journalVM.tappedJournalButton()
                 }
             }
         } label: {

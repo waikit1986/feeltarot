@@ -8,25 +8,29 @@
 import SwiftUI
 
 struct HomeView: View {
-    
-    @EnvironmentObject var userManager: UserManager
+    @EnvironmentObject var homeVM: HomeVM
     
     var body: some View {
-        VStack {
-            if userManager.id != nil {
-                JournalView()
-            } else {
-                LoginView()
+        NavigationStack {
+            VStack {
+                switch homeVM.selection {
+                case 0:
+                    JournalView()
+                case 1:
+                    WelcomeView()
+                default:
+                    JournalView()
+                }
+            }
+            .fontDesign(.rounded)
+            .task {
+                homeVM.checkKeychainIsEmpty()
             }
         }
-        .padding()
-        .fontDesign(.rounded)
     }
 }
 
 #Preview {
     HomeView()
-        .environmentObject(UserManager())
+        .environmentObject(HomeVM())
 }
-
-

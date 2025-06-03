@@ -14,3 +14,18 @@ struct TokenResponse: Decodable {
     let username: String
     let email: String
 }
+
+struct CreateUser: Codable {
+    let username: String
+    let email: String
+    let password: String
+}
+
+struct UserDisplay: Codable {
+    let username: String
+    let email: String
+}
+
+struct ServerError: Decodable {
+    let detail: String
+}

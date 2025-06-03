@@ -36,7 +36,11 @@ struct CreateAccountView: View {
                     .multilineTextAlignment(.center)
             }
             
-            Button(action: loginVM.createAccount) {
+            Button {
+                Task {
+                    await loginVM.createAccount()
+                }
+            }label: {
                 if loginVM.isLoading {
                     ProgressView()
                         .frame(maxWidth: .infinity)

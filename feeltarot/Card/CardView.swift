@@ -13,7 +13,7 @@ struct CardView: View {
     
     var body: some View {
         if journalVM.randomCard == nil {
-            Text("Meditate & Tap me\n for 3 seconds")
+            Text("Meditate and\n Tap me\n for 3 seconds")
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.center)
                 .shadow(color: colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8), radius: 10)
@@ -31,13 +31,7 @@ struct CardView: View {
                 )
                 .onLongPressGesture(minimumDuration: 3) {
                     withAnimation(.easeInOut(duration: 1)) {
-                        journalVM.randomNumberCard()
-                        Task {
-                            journalVM.isShowingTextField = false
-                            journalVM.startProgressView()
-                            journalVM.startStatusRotation()
-                            await journalVM.sendAIRequest()
-                        }
+                        journalVM.tappedCardView()
                     }
                 }
         } else {
@@ -82,7 +76,7 @@ struct CardView: View {
                         )
                         .padding(50)
                     
-                    ReadingView()
+                    CardAnswerView()
                 }
             }
         }
