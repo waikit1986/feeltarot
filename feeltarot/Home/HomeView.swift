@@ -8,23 +8,37 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Environment(\.scenePhase) var scenePhase
+    
     @EnvironmentObject var homeVM: HomeVM
+    @EnvironmentObject var journalVM: JournalVM
+    @EnvironmentObject var loginVM: LoginVM
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                switch homeVM.selection {
-                case 0:
-                    JournalView()
-                case 1:
-                    WelcomeView()
-                default:
-                    JournalView()
-                }
+        VStack {
+            switch homeVM.selection {
+            case 0:
+                JournalView()
+            case 1:
+                ReadingListView()
+            case 2:
+                WelcomeView()
+            default:
+                JournalView()
             }
-            .fontDesign(.rounded)
-            .task {
-                homeVM.checkKeychainIsEmpty()
+        }
+        .fontDesign(.rounded)
+        .task {
+            homeVM.checkKeychainIsEmpty()
+            journalVM.randomNumberBackground()
+            loginVM.startRepeatingTimer()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                Task {
+                    print("active back")
+                    await loginVM.reLogin()
+                }
             }
         }
     }

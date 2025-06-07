@@ -9,10 +9,10 @@ import SwiftUI
 
 @main
 struct FeelTarotApp: App {
-    
     @StateObject var homeVM = HomeVM()
     @StateObject var loginVM = LoginVM()
     @StateObject var journalVM = JournalVM()
+    @StateObject var readingVM = ReadingVM()
     @StateObject var keyboard = KeyboardObserver()
     
     var body: some Scene {
@@ -21,6 +21,7 @@ struct FeelTarotApp: App {
                 .environmentObject(homeVM)
                 .environmentObject(loginVM)
                 .environmentObject(journalVM)
+                .environmentObject(readingVM)
                 .environmentObject(keyboard)
         }
     }

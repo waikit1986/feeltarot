@@ -22,10 +22,12 @@ struct JournalButtonView: View {
                 }
             }
         } label: {
-            if journalVM.isLoading {
-                ProgressView()
-                    .foregroundStyle(Color.black)
+            if journalVM.isShowingCardView {
+                Text("Cancel")
                     .frame(maxWidth: .infinity)
+                    .onTapGesture {
+                        journalVM.cancelJournalButton()
+                    }
                 
             } else {
                 Text("I'm Ready")

@@ -14,6 +14,7 @@ class JournalVM: ObservableObject {
     @Published var isShowingCardView = false
     
     @Published var isLoading = false
+    
     @Published var card = ""
     @Published var situation = ""
     @Published var answer = ""
@@ -78,7 +79,7 @@ class JournalVM: ObservableObject {
     @Published var randomCard: Int? = nil
     
     func randomNumberBackground() {
-        randomBackground = Int.random(in: 0...2)
+        randomBackground = Int.random(in: 0...3)
     }
     
     func randomNumberCard() {
@@ -146,6 +147,11 @@ class JournalVM: ObservableObject {
     
     func tappedJournalButton() {
         isShowingCardView = true
+    }
+    
+    func cancelJournalButton() {
+        situation = ""
+        isShowingCardView = false
     }
 
     func tappedCardView() {

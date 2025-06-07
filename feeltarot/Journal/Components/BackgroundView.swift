@@ -15,7 +15,7 @@ struct BackgroundView: View {
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-            .offset(x: (journalVM.randomBackground == 1) ? -50 : 0)
+//            .offset(x: (journalVM.randomBackground == 1) ? -50 : 0)
             .ignoresSafeArea()
             .opacity(journalVM.isShowingCardView ? 0.5 : 1)
             .animation(.easeInOut(duration: 1), value: journalVM.isShowingCardView)

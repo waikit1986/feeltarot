@@ -2,52 +2,36 @@
 //  MenuView.swift
 //  feeltarot
 //
-//  Created by Low Wai Kit on 5/25/25.
+//  Created by Low Wai Kit on 6/7/25.
 //
-
 
 import SwiftUI
 
 struct MenuView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
+    @EnvironmentObject var homeVM: HomeVM
     
     var body: some View {
         HStack {
-            Spacer()
-            
-            Button {
-                
-            } label: {
-                Image(systemName: "house")
-                    .font(.title3)
-            }
+            Image(systemName: "list.bullet.circle")
+                .font(.title)
+                .onTapGesture {
+                    homeVM.selection = 1
+                }
             
             Spacer()
             
-            Button {
-                
-            } label: {
-                Image(systemName: "list.star")
-                    .font(.title3)
-            }
+            Image(systemName: "gearshape")
+                .font(.title)
+                .fontWeight(.semibold)
             
-            Spacer()
-            
-            Button {
-                
-            } label: {
-                Image(systemName: "gearshape")
-                    .font(.title3)
-            }
-            
-            Spacer()
         }
-        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.05)
         .foregroundStyle(Color("AccentColor"))
-        .background(Color.black)
-        .fontWeight(.semibold)
+        .shadow(color: colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8), radius: 10)
+        .padding()
     }
 }
-
 
 #Preview {
     MenuView()
