@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import SwiftUI
 
 class LoginVM: ObservableObject {
-    
+    @EnvironmentObject var homeVM: HomeVM
     
     // MARK: - Create Account & Login
     
@@ -115,7 +116,6 @@ class LoginVM: ObservableObject {
                     
                     print("✅ All credentials saved to Keychain")
                 }
-                // TODO: Navigate to main screen here
             }
             
         } catch {
@@ -154,6 +154,22 @@ class LoginVM: ObservableObject {
         isRegistered = hasToken && hasUsername && hasPassword
     }
     
+    func getStoredCredentials() {
+        if let emailData = KeychainHelper.standard.read(service: tokenService, account: emailAccount),
+           let storedEmail = String(data: emailData, encoding: .utf8) {
+            email = storedEmail
+        }
+
+        if let usernameData = KeychainHelper.standard.read(service: tokenService, account: usernameAccount),
+           let storedUsername = String(data: usernameData, encoding: .utf8) {
+            username = storedUsername
+        }
+    }
+    
+    func deleteToken() {
+        KeychainHelper.standard.delete(service: tokenService, account: accessTokenAccount)
+    }
+    
     // MARK: - ReLogin
     
     func reLogin() async {
@@ -163,6 +179,10 @@ class LoginVM: ObservableObject {
               let storedPassword = String(data: passwordData, encoding: .utf8),
               let url = URL(string: "https://feeltarot.com/api/token") else {
             print("❌ Missing stored credentials or invalid URL")
+            return
+        }
+        
+        guard let _ = KeychainHelper.standard.read(service: tokenService, account: accessTokenAccount) else {
             return
         }
         
@@ -259,6 +279,16 @@ class LoginVM: ObservableObject {
                 print("❌ Unexpected error decoding response: \(error)")
             }
         }
+    }
+    
+    // MARK: - Get Username Info
+    
+    func filterUsernameInput() {
+        username = String(
+            username
+                .filter { $0.isLetter || $0.isNumber }
+                .prefix(20)
+        )
     }
     
     // MARK: - Timer to relogin

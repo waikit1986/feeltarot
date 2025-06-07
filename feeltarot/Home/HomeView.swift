@@ -22,6 +22,8 @@ struct HomeView: View {
             case 1:
                 ReadingListView()
             case 2:
+                SettingsView()
+            case 3:
                 WelcomeView()
             default:
                 JournalView()
@@ -47,4 +49,6 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .environmentObject(HomeVM())
+        .environmentObject(LoginVM())
+        .environmentObject(JournalVM())
 }

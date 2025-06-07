@@ -10,11 +10,17 @@ import SwiftUI
 
 class HomeVM: ObservableObject {
         
-    @Published var selection = 2
+    @Published var selection = 3
     
     func checkKeychainIsEmpty() {
-        if let data = KeychainHelper.standard.read(service: "feeltarot", account: "userId"), let _ = String(data: data, encoding: .utf8) {
+//        if let userIdData = KeychainHelper.standard.read(service: "feeltarot", account: "userId"), let _ = String(data: userIdData, encoding: .utf8) {
+//            selection = 0
+//        }
+        
+        if let tokenData = KeychainHelper.standard.read(service: "feeltarot", account: "accessToken"), let _ = String(data: tokenData, encoding: .utf8) {
             selection = 0
+        } else {
+            selection = 3
         }
     }
 }

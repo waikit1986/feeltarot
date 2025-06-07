@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ReadingListView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     @EnvironmentObject var homeVM: HomeVM
     @EnvironmentObject var readingVM: ReadingVM
     
@@ -70,6 +72,7 @@ struct ReadingListView: View {
                     Spacer()
                 }
                 .foregroundStyle(Color("AccentColor"))
+                .shadow(color: colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8), radius: 10)
                 .padding()
             }
             .background {
@@ -83,5 +86,4 @@ struct ReadingListView: View {
     ReadingListView()
         .environmentObject(HomeVM())
         .environmentObject(ReadingVM())
-        .environmentObject(JournalVM())
 }

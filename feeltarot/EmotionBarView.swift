@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct EmotionBarView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     @EnvironmentObject var readingVM: ReadingVM
 
     var body: some View {
@@ -19,10 +21,10 @@ struct EmotionBarView: View {
                 Color.accentColor.frame(width: width1)
                 Color.indigo.frame(width: geo.size.width - width1)
             }
-            .cornerRadius(4)
         }
-        .frame(height: 25)
+        .frame(height: 30)
         .cornerRadius(15)
+        .shadow(color: colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8), radius: 10)
         .padding()
     }
 }

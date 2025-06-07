@@ -25,6 +25,9 @@ struct MenuView: View {
             Image(systemName: "gearshape")
                 .font(.title)
                 .fontWeight(.semibold)
+                .onTapGesture {
+                    homeVM.selection = 2
+                }
             
         }
         .foregroundStyle(Color("AccentColor"))

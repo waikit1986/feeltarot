@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject var homeVM: HomeVM
     @EnvironmentObject var loginVM: LoginVM
     
     var body: some View {
@@ -17,6 +18,9 @@ struct LoginView: View {
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(12)
+                .onChange(of: loginVM.username) {
+                    loginVM.filterUsernameInput()
+                }
             
             SecureField("Password", text: $loginVM.password)
                 .autocapitalization(.none)
@@ -33,6 +37,7 @@ struct LoginView: View {
             Button {
                 Task {
                     await loginVM.login()
+                    homeVM.selection = 0
                 }
             }label: {
                 if loginVM.isLoading {

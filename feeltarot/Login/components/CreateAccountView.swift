@@ -23,6 +23,9 @@ struct CreateAccountView: View {
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(12)
+                .onChange(of: loginVM.username) {
+                    loginVM.filterUsernameInput()
+                }
             
             SecureField("Password", text: $loginVM.password)
                 .autocapitalization(.none)
