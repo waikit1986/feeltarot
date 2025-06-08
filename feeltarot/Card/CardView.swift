@@ -13,15 +13,16 @@ struct CardView: View {
     
     var body: some View {
         if journalVM.randomCard == nil {
-            Text("Meditate and\n Tap me\n for 3 seconds")
-                .fontWeight(.semibold)
-                .multilineTextAlignment(.center)
-                .shadow(color: colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8), radius: 10)
+//            Text("Meditate and\n Tap me\n for 3 seconds")
+//                .fontWeight(.semibold)
+//                .multilineTextAlignment(.center)
+//                .shadow(color: colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8), radius: 10)
             
             Image("card-back")
                 .resizable()
-                .aspectRatio(2.5/4, contentMode: .fit)
-                .frame(width: 150)
+//                .aspectRatio(2.5/4, contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 180, height: 300)
                 .cornerRadius(9)
                 .shadow(
                     color: colorScheme == .dark ? .white.opacity(1) : .black.opacity(1),
@@ -29,7 +30,12 @@ struct CardView: View {
                     x: 0,
                     y: 5
                 )
-                .onLongPressGesture(minimumDuration: 3) {
+//                .onLongPressGesture(minimumDuration: 3) {
+//                    withAnimation(.easeInOut(duration: 1)) {
+//                        journalVM.tappedCardView()
+//                    }
+//                }
+                .onTapGesture {
                     withAnimation(.easeInOut(duration: 1)) {
                         journalVM.tappedCardView()
                     }

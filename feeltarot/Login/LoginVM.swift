@@ -16,69 +16,74 @@ class LoginVM: ObservableObject {
     @Published var email = ""
     @Published var username = ""
     @Published var password = ""
+    @Published var confirmPassword = ""
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var isCreateAccount = false
     
-    func createAccount() async {
+    func createAccount() async throws {
         guard let url = URL(string: "https://feeltarot.com/api/user") else {
-            await MainActor.run { self.errorMessage = "Invalid URL" }
-            return
+            throw URLError(.badURL)
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+
         let userData = CreateUser(username: username, email: email, password: password)
-        
-        do {
-            request.httpBody = try JSONEncoder().encode(userData)
-        } catch {
-            await MainActor.run { self.errorMessage = "Failed to encode user data." }
-            return
-        }
-        
+
+        request.httpBody = try JSONEncoder().encode(userData)
+
         await MainActor.run {
             self.isLoading = true
             self.errorMessage = nil
         }
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            
-            let user = try JSONDecoder().decode(UserDisplay.self, from: data)
-            await MainActor.run {
-                print("Logged in user: \(user)")
-                // TODO: Update app state as needed
-            }
-        } catch {
-            if let serverError = try? JSONDecoder().decode(ServerError.self, from: (error as NSError).userInfo[NSUnderlyingErrorKey] as? Data ?? Data()) {
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid server response"])
+        }
+
+        if !(200...299).contains(httpResponse.statusCode) {
+            if let serverError = try? JSONDecoder().decode(ServerError.self, from: data) {
+                errorMessage = serverError.detail
                 await MainActor.run {
-                    self.errorMessage = serverError.detail
+                    self.isLoading = false
                 }
+                throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: serverError.detail])
             } else {
+                errorMessage = String(httpResponse.statusCode)
                 await MainActor.run {
-                    self.errorMessage = "Something went wrong."
+                    self.isLoading = false
                 }
+                throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "Server error \(httpResponse.statusCode)"])
             }
         }
-        
+
+        let user = try JSONDecoder().decode(UserDisplay.self, from: data)
+        await MainActor.run {
+            print("✅ Created user: \(user)")
+        }
+
         await MainActor.run {
             self.isLoading = false
         }
     }
     
-    func login() async {
+    func login() async throws {
         guard let url = URL(string: "https://feeltarot.com/api/token") else {
-            await MainActor.run { self.errorMessage = "Invalid URL" }
-            return
+            let message = "Invalid URL"
+            await MainActor.run {
+                self.errorMessage = message
+                self.isLoading = false
+            }
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        
+
         let bodyParams = [
             "username": username,
             "password": password
@@ -86,21 +91,46 @@ class LoginVM: ObservableObject {
         let bodyString = bodyParams.map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")" }
             .joined(separator: "&")
         request.httpBody = bodyString.data(using: .utf8)
-        
+
         await MainActor.run {
             self.isLoading = true
             self.errorMessage = nil
         }
-        
+
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                let message = "Invalid server response"
+                await MainActor.run {
+                    self.errorMessage = message
+                    self.isLoading = false
+                }
+                throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+            }
+
+            guard (200...299).contains(httpResponse.statusCode) else {
+                let errorMessage: String
+                if let serverError = try? JSONDecoder().decode(ServerError.self, from: data) {
+                    errorMessage = serverError.detail
+                } else {
+                    errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+                }
+
+                await MainActor.run {
+                    self.errorMessage = "Server error: \(errorMessage)"
+                    self.isLoading = false
+                }
+
+                throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+            }
+
             if let jsonString = String(data: data, encoding: .utf8) {
                 print("Response JSON: \(jsonString)")
             }
-            
+
             let decoded = try JSONDecoder().decode(TokenResponse.self, from: data)
-            
+
             await MainActor.run {
                 if let tokenData = decoded.access_token.data(using: .utf8),
                    let userIdData = decoded.user_id.data(using: .utf8),
@@ -116,26 +146,20 @@ class LoginVM: ObservableObject {
                     
                     print("✅ All credentials saved to Keychain")
                 }
+                self.isLoading = false
             }
-            
+
         } catch {
-            if let serverError = try? JSONDecoder().decode(ServerError.self, from: (error as NSError).userInfo[NSUnderlyingErrorKey] as? Data ?? Data()) {
-                await MainActor.run {
-                    self.errorMessage = serverError.detail
-                }
-            } else {
-                await MainActor.run {
-                    self.errorMessage = "Unidentified error occurred."
-                }
+            let message = "Network error: \(error.localizedDescription)"
+            await MainActor.run {
+                self.errorMessage = message
+                self.isLoading = false
             }
-        }
-        
-        await MainActor.run {
-            self.isLoading = false
+            throw NSError(domain: "", code: -1009, userInfo: [NSLocalizedDescriptionKey: message])
         }
     }
     
-    // MARK: - Check if credentials stored
+    // MARK: - Credentials operation
     
     @Published var isRegistered: Bool = false
     
@@ -163,6 +187,12 @@ class LoginVM: ObservableObject {
         if let usernameData = KeychainHelper.standard.read(service: tokenService, account: usernameAccount),
            let storedUsername = String(data: usernameData, encoding: .utf8) {
             username = storedUsername
+        }
+
+        if let passwordData = KeychainHelper.standard.read(service: tokenService, account: passwordAccount),
+           let storedPassword = String(data: passwordData, encoding: .utf8) {
+            password = storedPassword
+            confirmPassword = storedPassword
         }
     }
     
@@ -247,6 +277,146 @@ class LoginVM: ObservableObject {
         }
     }
     
+    // MARK: - Update user
+    
+    @Published var isDeleteUser = false
+    @Published var hasDeletedAccount = false
+    
+    func updateUser() async {
+        guard let url = URL(string: "https://feeltarot.com/api/user/\(username)") else {
+            await MainActor.run { self.errorMessage = "Invalid URL" }
+            return
+        }
+
+        guard var request = AuthorizationBearerBuilder.build(url: url, method: "PUT") else {
+            print("❌ Failed to build request")
+            return
+        }
+
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let userData = CreateUser(username: username, email: email, password: password)
+
+        do {
+            request.httpBody = try JSONEncoder().encode(userData)
+        } catch {
+            await MainActor.run { self.errorMessage = "Failed to encode user data." }
+            return
+        }
+
+        await MainActor.run {
+            self.isLoading = true
+            self.errorMessage = nil
+        }
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
+                if let serverError = try? JSONDecoder().decode(ServerError.self, from: data) {
+                    await MainActor.run {
+                        self.errorMessage = serverError.detail
+                    }
+                } else {
+                    await MainActor.run {
+                        self.errorMessage = "Server error: \(httpResponse.statusCode)"
+                    }
+                }
+                return
+            }
+
+            if let responseStr = String(data: data, encoding: .utf8) {
+                print("✅ Server response: \(responseStr)")
+            }
+
+            Task {
+                try await login()
+            }
+
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Something went wrong: \(error.localizedDescription)"
+            }
+        }
+
+        await MainActor.run {
+            self.isLoading = false
+        }
+    }
+    
+    // MARK: - Delete User
+    
+    func deleteUser() async throws {
+        guard let url = URL(string: "https://feeltarot.com/api/user") else {
+            let message = "Invalid URL"
+            await MainActor.run {
+                self.errorMessage = message
+                self.isDeleteUser = false
+            }
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+        }
+
+        guard var request = AuthorizationBearerBuilder.build(url: url, method: "DELETE") else {
+            let message = "Failed to build request"
+            await MainActor.run {
+                self.errorMessage = message
+                self.isDeleteUser = false
+            }
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+        }
+
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                let message = "Invalid HTTP response"
+                await MainActor.run {
+                    self.errorMessage = message
+                    self.isDeleteUser = false
+                }
+                throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+            }
+
+            if (200...299).contains(httpResponse.statusCode) {
+                if let result = String(data: data, encoding: .utf8) {
+                    print("✅ Delete response: \(result)")
+                }
+
+                await MainActor.run {
+                    self.errorMessage = nil
+                    self.hasDeletedAccount = true
+                    self.isDeleteUser = false
+                }
+
+            } else {
+                let message: String
+                if let serverError = try? JSONDecoder().decode(ServerError.self, from: data) {
+                    message = serverError.detail
+                } else {
+                    message = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+                }
+
+                await MainActor.run {
+                    self.errorMessage = "Server error: \(message)"
+                    self.isDeleteUser = false
+                }
+
+                throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: message])
+            }
+
+        } catch {
+            let message = "Network error: \(error.localizedDescription)"
+            await MainActor.run {
+                self.errorMessage = message
+                self.isDeleteUser = false
+            }
+
+            throw NSError(domain: "", code: -1009, userInfo: [NSLocalizedDescriptionKey: message])
+        }
+    }
+    
     // MARK: - Get Username Info
     
     func getUsername() async {
@@ -281,7 +451,7 @@ class LoginVM: ObservableObject {
         }
     }
     
-    // MARK: - Get Username Info
+    // MARK: - Filter user name input
     
     func filterUsernameInput() {
         username = String(

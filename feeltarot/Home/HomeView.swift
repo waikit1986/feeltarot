@@ -32,6 +32,7 @@ struct HomeView: View {
         .fontDesign(.rounded)
         .task {
             homeVM.checkKeychainIsEmpty()
+            homeVM.checkTokenIsEmpty()
             journalVM.randomNumberBackground()
             loginVM.startRepeatingTimer()
         }

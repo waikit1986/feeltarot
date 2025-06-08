@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CreateAccountView: View {
+    @EnvironmentObject var homeVM: HomeVM
     @EnvironmentObject var loginVM: LoginVM
     
     var body: some View {
@@ -33,6 +34,18 @@ struct CreateAccountView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(12)
             
+            if loginVM.password != loginVM.confirmPassword {
+                Text("Passwords do not match")
+                    .foregroundColor(.red)
+                    .multilineTextAlignment(.center)
+            }
+
+            SecureField("Confirm Password", text: $loginVM.confirmPassword)
+                .autocapitalization(.none)
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(12)
+            
             if let errorMessage = loginVM.errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
@@ -41,7 +54,13 @@ struct CreateAccountView: View {
             
             Button {
                 Task {
-                    await loginVM.createAccount()
+                    do {
+                        try await loginVM.createAccount()
+                        try await loginVM.login()
+                        homeVM.selection = 0
+                    } catch {
+                        print(loginVM.errorMessage as Any)
+                    }
                 }
             }label: {
                 if loginVM.isLoading {
@@ -61,7 +80,7 @@ struct CreateAccountView: View {
             
             Text("Login")
                 .onTapGesture {
-                    loginVM.isCreateAccount = false
+                    homeVM.isKeychainExist = true
                 }
                 .padding()
             
@@ -74,5 +93,6 @@ struct CreateAccountView: View {
 
 #Preview {
     CreateAccountView()
+        .environmentObject(HomeVM())
         .environmentObject(LoginVM())
 }

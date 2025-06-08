@@ -36,8 +36,12 @@ struct LoginView: View {
             
             Button {
                 Task {
-                    await loginVM.login()
-                    homeVM.selection = 0
+                    do {
+                        try await loginVM.login()
+                        homeVM.selection = 0
+                    } catch {
+                        print(loginVM.errorMessage as Any)
+                    }
                 }
             }label: {
                 if loginVM.isLoading {
@@ -57,7 +61,7 @@ struct LoginView: View {
             
             Text("Create Account")
                 .onTapGesture {
-                    loginVM.isCreateAccount = true
+                    homeVM.isKeychainExist = false
                 }
                 .padding()
             
@@ -65,6 +69,9 @@ struct LoginView: View {
         }
         .frame(width: UIScreen.main.bounds.width * 0.8)
         .padding()
+        .onAppear {
+            loginVM.getStoredCredentials()
+        }
     }
 }
 

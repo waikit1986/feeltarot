@@ -34,6 +34,24 @@ struct SettingsView: View {
                         loginVM.filterUsernameInput()
                     }
                 
+                SecureField("Password", text: $loginVM.password)
+                    .autocapitalization(.none)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(12)
+                
+                if loginVM.password != loginVM.confirmPassword {
+                    Text("Passwords do not match")
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                }
+
+                SecureField("Confirm Password", text: $loginVM.confirmPassword)
+                    .autocapitalization(.none)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(12)
+                
                 if let errorMessage = loginVM.errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
@@ -42,7 +60,7 @@ struct SettingsView: View {
                 
                 Button {
                     Task {
-                        await loginVM.createAccount()
+                        await loginVM.updateUser()
                     }
                 }label: {
                     if loginVM.isLoading {
@@ -54,7 +72,14 @@ struct SettingsView: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
-                .disabled(loginVM.username.isEmpty || loginVM.password.isEmpty || loginVM.isLoading)
+                .disabled(
+                    loginVM.username.isEmpty ||
+                    loginVM.email.isEmpty ||
+                    loginVM.password.isEmpty ||
+                    loginVM.confirmPassword.isEmpty ||
+                    loginVM.password != loginVM.confirmPassword ||
+                    loginVM.isLoading
+                )
                 .padding()
                 .background(Color("AccentColor"))
                 .foregroundColor(.black)
@@ -68,10 +93,6 @@ struct SettingsView: View {
                     }
                 
                 Spacer()
-                
-                Text("delete account")
-                    .font(.caption)
-                    .foregroundStyle(Color.red)
             }
             .frame(width: UIScreen.main.bounds.width * 0.8)
             .padding()
@@ -81,6 +102,17 @@ struct SettingsView: View {
                     .font(.title)
                     .onTapGesture {
                         homeVM.selection = 0
+                    }
+                
+                Spacer()
+                
+                Text("delete account")
+                    .font(.caption)
+                    .foregroundStyle(Color.red)
+                    .onTapGesture {
+                        Task {
+                            loginVM.isDeleteUser = true
+                        }
                     }
                 
                 Spacer()
@@ -94,6 +126,27 @@ struct SettingsView: View {
         }
         .background {
             BackgroundView()
+        }
+        .alert("Deleting your Account, will also delete all your saved Readings", isPresented: $loginVM.isDeleteUser) {
+            Button("Cancel", role: .cancel) {
+                loginVM.isDeleteUser = false
+            }
+            Button("OK", role: .destructive) {
+                Task {
+                    do {
+                        try await loginVM.deleteUser()
+                        loginVM.deleteToken()
+                    } catch {
+                        print(loginVM.errorMessage as Any)
+                    }
+                }
+            }
+        }
+        .alert("Your account has been deleted", isPresented: $loginVM.hasDeletedAccount) {
+            Button("OK", role: .cancel) {
+                loginVM.hasDeletedAccount = false
+                homeVM.selection = 3
+            }
         }
     }
 }

@@ -13,6 +13,8 @@ struct EmotionBarView: View {
     @EnvironmentObject var readingVM: ReadingVM
 
     var body: some View {
+        Text("Your emotional journal")
+        
         GeometryReader { geo in
             let total = readingVM.positiveEmotion + readingVM.negativeEmotion
             let width1 = total > 0 ? CGFloat(readingVM.positiveEmotion / total) * geo.size.width : 0

@@ -34,7 +34,7 @@ struct ReadingListView: View {
                                             .truncationMode(.tail)
                                     }
                                     .foregroundStyle(Color("TextColor"))
-                                    .padding()
+                                    .padding(8)
                                     .background {
                                         readingVM.colorForCategory(emotion: reading.emotion)
                                             .cornerRadius(15)
@@ -47,9 +47,15 @@ struct ReadingListView: View {
                     }
                     
                     if readingVM.readingList == nil {
-                        Text("You have no Readings done")
-                            .font(.title2)
-                            .fontWeight(.semibold)
+                        VStack {
+                            Spacer()
+                            
+                            Text("You have no Readings done")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                            
+                            Spacer()
+                        }
                     }
                 }
                 .onAppear {
@@ -59,7 +65,13 @@ struct ReadingListView: View {
                 }
                 
                 if readingVM.readingList != nil {
+                    Divider()
+                        .fontWeight(.bold)
+                    
                     EmotionBarView()
+                    
+                    Divider()
+                        .fontWeight(.bold)
                 }
                 
                 HStack {

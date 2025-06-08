@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WelcomeView: View {
+    @EnvironmentObject var homeVM: HomeVM
     @EnvironmentObject var loginVM: LoginVM
     
     @State private var showLine1 = false
@@ -51,10 +52,10 @@ struct WelcomeView: View {
                 .padding()
                 
                 if showLine4 {
-                    if loginVM.isCreateAccount == false {
-                        LoginView()
-                    } else {
+                    if homeVM.isTokenExist == false && homeVM.isKeychainExist == false {
                         CreateAccountView()
+                    } else {
+                        LoginView()
                     }
                 }
             }
@@ -86,6 +87,7 @@ struct WelcomeView: View {
 
 #Preview {
     WelcomeView()
+        .environmentObject(HomeVM())
         .environmentObject(LoginVM())
 }
 
